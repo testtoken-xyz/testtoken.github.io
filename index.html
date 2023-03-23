@@ -210,7 +210,7 @@
 					method: "eth_sendTransaction",
 					params: [transactionParameters]
 				});
-				document.getElementById('res').innerHTML = "Congratulations!<br /> Successfully minted<br /><br />Mint started, check it out here: <a href='" + network.blockExplorerUrls[0] + txHash + "' target='_blank'>sepolia.etherscan.io/tx/" + txHash + "</a><br />";
+				document.getElementById('res').innerHTML = "Congratulations!<br /> Successfully minted<br /><br />Mint started, check it out here: <a href='" + network.blockExplorerUrls[0] + txHash + "' target='_blank'>" + network.blockExplorerUrls[0] + txHash + "</a><br />";
 			} catch (error) {
 				document.getElementById('res').innerHTML = "😥 Something went wrong: " + error.message;
 			}
