@@ -1,0 +1,251 @@
+<!doctype html>
+<html class="no-js" lang="en-US">
+
+<head>
+	<title>Mint</title>
+	<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+</head>
+
+<body>
+	<h1>Mint TestToken</h1>
+
+	<div id="res"></div>
+	<select id="networkId">
+		<option value="argGoerli">Arbitrum Goerli</option>
+		<option value="optGoerli">Optimism Goerli</option>
+		<option value="goerli">Ethereum Goerli</option>
+		<option value="mumbai">Polygon Mumbai</option>
+		<option value="baseGoerli">Base Goerli</option>
+		<option value="optimism">Optimism</option>
+		<option value="arbitrum">Arbitrum One</option>
+	</select>
+	<input id="amount" value="1000" /> 
+	<button onclick="mint(document.getElementById('networkId').value, document.getElementById('amount').value);">Mint</button>
+	<br />
+	<script>
+		var adr = "";
+
+		const contracts = {
+			"arbGoerli": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"optGoerli": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"goerli": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"mumbai": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"baseGoerli": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"optimism": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"arbitrum": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"polygon": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+		}
+		const networks = [
+    {
+      "name": "Arbitrum Goerli",
+      "key": "arbGoerli",
+      "currency": "ETH",
+      "chainId": 421613,
+      "enabled": true,
+        "blockExplorerUrls": ['https://goerli.arbiscan.io'],
+        "rpcUrls": ['https://goerli-rollup.arbitrum.io/rpc'],
+      "testnet": true
+    },
+    {
+      "name": "Optimism Goerli",
+      "key": "optGoerli",
+      "currency": "ETH",
+      "chainId": 420,
+        "blockExplorerUrls": ['https://goerli-optimism.etherscan.io'],
+        "rpcUrls": ['https://goerli.optimism.io'],
+      "enabled": true,
+      "testnet": true
+    },
+    {
+      "name": "Ethereum Goerli",
+      "key": "goerli",
+      "currency": "ETH",
+      "chainId": 5,
+      "enabled": true,
+        "blockExplorerUrls": ['https://goerli.etherscan.io/'],
+        "rpcUrls": ['https://eth-goerli.public.blastapi.io'],
+      "testnet": true
+    },
+    {
+      "name": "Shardeum Sphinx",
+      "key": "sphinx",
+      "currency": "SHM",
+        "blockExplorerUrls": ['https://explorer-sphinx.shardeum.org/'],
+        "rpcUrls": ['https://sphinx.shardeum.org/'],
+
+      "chainId": 8082,
+      "enabled": true,
+      "testnet": true
+    },
+    {
+      "name": "Polygon Mumbai",
+      "key": "mumbai",
+      "currency": "MATIC",
+        "blockExplorerUrls": ['https://mumbai.polygonscan.com/'],
+        "rpcUrls": ['https://rpc-mumbai.maticvigil.com'],
+      "chainId": 80001,
+      "enabled": true,
+      "testnet": true
+    },
+    {
+      "name": "Base Goerli",
+      "key": "baseGoerli",
+      "currency": "ETH",
+      "chainId": 421613,
+        "blockExplorerUrls": ['https://goerli.basescan.org'],
+        "rpcUrls": ['https://goerli.base.org'],
+      "enabled": true,
+      "testnet": true
+
+    },
+    {
+      "name": "Ethereum",
+      "key": "eth",
+      "currency": "ETH",
+        "blockExplorerUrls": ['https://etherscan.io/'],
+        "rpcUrls": ['https://mainnet.infura.io/v3/'],
+      "chainId": 1,
+      "enabled": false,
+      "testnet": false
+    },
+    {
+      "name": "Polygon",
+      "key": "polygon",
+      "currency": "MATIC",
+        "blockExplorerUrls": ['https://polygonscan.com/'],
+        "rpcUrls": ['https://polygon-rpc.com/'],
+      "chainId": 137,
+      "enabled": true,
+      "testnet": false
+    },
+    {
+      "name": "Optimism",
+      "key": "optimism",
+      "currency": "ETH",
+        "blockExplorerUrls": ['https://optimistic.etherscan.io/'],
+        "rpcUrls": ['https://mainnet.optimism.io'],
+      "chainId": 10,
+      "enabled": true,
+      "testnet": false
+    },
+    {
+      "name": "Arbitrum One",
+      "key": "arbitrum",
+      "currency": "ETH",
+        "blockExplorerUrls": ['https://arbiscan.io'],
+        "rpcUrls": ['https://arb1.arbitrum.io/rpc'],
+      "chainId": 42161,
+      "enabled": true,
+      "testnet": false
+    },
+  ];
+
+		const tokenABI = [{
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokens",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }];
+		const web3 = new Web3();
+		
+
+		var tokenContractAddress = contracts.arbGoerli;
+
+		async function enableMM(network) {
+			if (window.ethereum) {
+				try {
+					await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+					adr = window.ethereum.selectedAddress;
+					window.contract = await new web3.eth.Contract(tokenABI, tokenContractAddress);
+					
+				} catch (error) {
+					console.log("error: ", error);
+					// User denied account access...
+				}
+			}
+			// Legacy dapp browsers...
+			else if (window.web3) {
+			}
+			// Non-dapp browsers...
+			else {
+				console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+			}
+		}
+		async function mint(networkId, amount) {
+			var network = null;
+			for (var i = 0; i < networks.length; i++) {
+				if (networks[i].key == networkId) {
+					network = networks[i];
+				}
+			}
+			await enableMM(network);
+			await switchNetworks(network);
+			console.log("network: ", network);
+			var weiAmount = web3.utils.numberToHex(web3.utils.toWei(amount, "ether"));
+
+			const transactionParameters = {
+				gas: web3.utils.toHex(295000),
+				maxPriorityFeePerGas: null,
+				maxFeePerGas: null,
+				to: tokenContractAddress,
+				from: window.ethereum.selectedAddress,
+				data: window.contract.methods
+					.mint(weiAmount)
+					.encodeABI(),
+			};
+
+			try {
+				const txHash = await window.ethereum.request({
+					method: "eth_sendTransaction",
+					params: [transactionParameters]
+				});
+				document.getElementById('res').innerHTML = "Congratulations!<br /> Successfully minted<br /><br />Mint started, check it out here: <a href='" + network.blockExplorerUrls[0] + txHash + "' target='_blank'>sepolia.etherscan.io/tx/" + txHash + "</a><br />";
+			} catch (error) {
+				document.getElementById('res').innerHTML = "😥 Something went wrong: " + error.message;
+			}
+		}
+
+		async function switchNetworks(network) {
+			try {
+				await window.ethereum.request({
+					method: 'wallet_switchEthereumChain',
+					params: [{ chainId: "0x"+network.chainId.toString(16) }],
+				});
+			} catch (error) {
+				if (error.code === 4902) {
+					try {
+						await window.ethereum.request({
+							method: 'wallet_addEthereumChain',
+							params: [
+								{
+									chainId: "0x"+network.chainId.toString(16),
+									chainName: network.name,
+									nativeCurrency: {
+										symbol: network.currency,
+										decimals: 18,
+										name: network.currency
+									},
+									blockExplorerUrls: network.blockExplorerUrls,
+									rpcUrls: network.rpcUrls,
+								},
+							],
+						});
+					} catch (addError) {
+						console.error(addError);
+					}
+				}
+				console.error(error);
+			}
+		}
+	</script>
+</body>
+
+</html>
