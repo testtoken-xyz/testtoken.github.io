@@ -14,10 +14,13 @@
 		<option value="argGoerli">Arbitrum Goerli</option>
 		<option value="optGoerli">Optimism Goerli</option>
 		<option value="goerli">Ethereum Goerli</option>
+		<option value="scrollAlpha">Scroll Alpha</option>
 		<option value="mumbai">Polygon Mumbai</option>
 		<option value="baseGoerli">Base Goerli</option>
 		<option value="optimism">Optimism</option>
 		<option value="arbitrum">Arbitrum One</option>
+		<option value="zkSyncEra">zkSync Era</option>
+		
 	</select>
 	<input id="amount" value="1000" /> 
 	<button onclick="mint(document.getElementById('networkId').value, document.getElementById('amount').value);">Mint</button>
@@ -37,6 +40,8 @@
 			"optimism": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
 			"arbitrum": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
 			"polygon": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF",
+			"zkSyncEra": "0xC7383EEaD07CE8fB3dea01E4935504dC38095D17",
+			"scrollAlpha": "0x3b122a12344cBcebCf0ED3bd1b27C2B3174759BF"
 		}
 		const networks = [
     {
@@ -140,6 +145,26 @@
       "chainId": 42161,
       "enabled": true,
       "testnet": false
+    },
+    {
+      "name": "zkSync Era Mainnet",
+      "key": "zkSyncEra",
+      "currency": "ETH",
+        "blockExplorerUrls": ['https://explorer.zksync.io'],
+        "rpcUrls": ['https://zksync2-mainnet.zksync.io'],
+      "chainId": 324,
+      "enabled": true,
+      "testnet": false
+    },
+    {
+      "name": "Scroll Alpha",
+      "key": "scrollAlpha",
+      "currency": "ETH",
+        "blockExplorerUrls": [],
+        "rpcUrls": ['https://alpha-rpc.scroll.io/l2'],
+      "chainId": 534353,
+      "enabled": true,
+      "testnet": true
     },
   ];
 
