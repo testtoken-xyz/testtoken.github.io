@@ -15,6 +15,7 @@
 		<option value="optGoerli">Optimism Goerli</option>
 		<option value="goerli">Ethereum Goerli</option>
 		<option value="scrollAlpha">Scroll Alpha</option>
+		<option value="sepolia">Ethereum Sepolia</option>
 		<option value="mumbai">Polygon Mumbai</option>
 		<option value="baseGoerli">Base Goerli</option>
 		<option value="optimism">Optimism</option>
@@ -70,8 +71,18 @@
       "currency": "ETH",
       "chainId": 5,
       "enabled": true,
-        "blockExplorerUrls": ['https://goerli.etherscan.io/'],
+        "blockExplorerUrls": ['https://goerli.etherscan.io'],
         "rpcUrls": ['https://eth-goerli.public.blastapi.io'],
+      "testnet": true
+    },
+    {
+      "name": "Ethereum Sepolia",
+      "key": "sepolia",
+      "currency": "ETH",
+      "chainId": 11155111,
+      "enabled": true,
+        "blockExplorerUrls": ['https://sepolia.etherscan.io'],
+        "rpcUrls": ['https://sepolia.infura.io/v3/'],
       "testnet": true
     },
     {
